@@ -1,0 +1,141 @@
+AWS Cloud Infrastructure Project 
+🎯 Objective
+
+To design and deploy a highly available and scalable web application using core AWS services such as EC2, RDS, EFS, S3, CloudFront, ALB, Auto Scaling, and Route 53.
+
+⚙️ Architecture Overview
+
+Built a multi-tier architecture:
+
+Frontend – Web instances (Nginx) hosted on EC2 in public subnets.
+
+Backend – Database hosted on Amazon RDS (Aurora/MySQL) in private subnets.
+
+Storage – Shared data stored in Amazon EFS and static content in S3.
+
+Networking – Custom VPC with public and private subnets across multiple Availability Zones.
+
+Security – Controlled via Security Groups, IAM Roles, and least-privilege policies.
+
+Performance – Auto Scaling and Load Balancing ensure high availability and fault tolerance.
+
+Global Delivery – CloudFront with Route 53 domain mapping for secure, fast content delivery.
+
+🧱 Step-by-Step Implementation
+1. Networking Setup
+
+Created a Custom VPC with two Availability Zones.
+
+Configured Public and Private Subnets.
+
+Attached an Internet Gateway (IGW) for internet access.
+
+Created Route Tables for proper routing between public/private subnets.
+
+2. S3 and CloudFront
+
+Created an S3 bucket to store static website assets (HTML, CSS, JS, images).
+
+Enabled versioning and public read access for static files.
+
+Integrated Amazon CloudFront as CDN for faster global content delivery.
+
+Connected Route 53 domain to CloudFront distribution for custom domain access.
+
+3. EC2 Configuration
+
+Launched Ubuntu EC2 instances in public subnets.
+
+Installed Nginx to serve web pages:
+
+sudo apt update
+sudo apt install nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx
+
+
+Configured index.html and application files.
+
+4. EFS Setup
+
+Created an EFS File System and mount targets in both AZs.
+
+Installed NFS utilities and mounted EFS on EC2 instances:
+
+sudo apt install nfs-common -y
+sudo mount -t nfs4 -o nfsvers=4.1 <EFS-DNS>:/ /mnt/efs
+
+
+Used EFS for shared files like configuration, logs, and plugins.
+
+5. RDS Database Setup
+
+Created RDS (MySQL or Aurora) in private subnets.
+
+Created a Read Replica for high availability.
+
+Connected EC2 web servers to RDS:
+
+mysql -h <RDS-endpoint> -P 3306 -u <username> -p
+
+6. Load Balancing & Auto Scaling
+
+Created an Application Load Balancer (ALB) to distribute incoming traffic.
+
+Configured Target Groups and Health Checks.
+
+Set up an Auto Scaling Group linked with the ALB.
+
+Built a custom AMI from a configured EC2 instance to launch new instances automatically.
+
+7. IAM Configuration
+
+Created IAM Roles for EC2 to access S3, EFS, and CloudWatch.
+
+Applied least privilege policies for security compliance.
+
+8. Route 53 and Domain
+
+Registered a custom domain (e.g., example.online).
+
+Configured CNAME/A Records to route traffic through CloudFront → ALB → EC2.
+
+Issued SSL certificate using AWS ACM for HTTPS support.
+
+🌐 Final Architecture Summary
+
+Users access your domain via Route 53 → CloudFront → ALB.
+
+ALB forwards requests to EC2 web servers.
+
+Web servers fetch shared data from EFS and dynamic data from RDS.
+
+Static content (images, CSS, JS) is served via S3 + CloudFront.
+
+Auto Scaling maintains availability & fault tolerance.
+
+📈 Key AWS Services Used
+
+Compute: EC2, Auto Scaling, AMI
+
+Database: RDS (Aurora/MySQL), Read Replica
+
+Storage: S3, EFS
+
+Networking: VPC, Subnets, Route Tables, IGW
+
+Security: IAM Roles, Security Groups
+
+Load Balancing: Application Load Balancer
+
+CDN & DNS: CloudFront, Route 53
+
+Monitoring: CloudWatch
+
+💡 Outcome
+
+Built a scalable, secure, and cost-optimized web infrastructure.
+
+Gained hands-on experience with AWS architecture, networking, and DevOps deployment.
+
+Learned to handle real-world aspects of availability, automation, and performance optimization.
